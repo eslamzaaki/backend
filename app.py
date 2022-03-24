@@ -42,18 +42,20 @@ def index2():
         message=test2(password)
         response=jsonify({'message':message})
         return response
+
 @app.route('/uploadFile', methods=['POST'])
 def upload_file():
-    if request.files is not None:
-          uploaded_file = request.files['File']
-          if uploaded_file.filename != '':
-              uploaded_file.save(os.path.join("./files",uploaded_file.filename))
-              return jsonify({'message':'success'})
-    else:
-        return jsonify({"message":"nofile"})            
+    files = request.files.getlist('files')
+
+    for file in files:
+            print(file.filename)
+            file.save(os.path.join("./files",file.filename))
+              #if i have file name eslam.txt so after os.path.join I have /files/eslam.txt
+    return jsonify({'message':'success'})
+           
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=5000,debug=True)
 #password of cf account => Eslam123#
 ##Deploy Back end
  #must be requirements.txt and Procfile
