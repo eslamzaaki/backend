@@ -2,6 +2,7 @@ from flask import Flask,request,jsonify,make_response
 from flask_cors import CORS
 from script.test import test1
 from script.test2 import test2
+import os
 app = Flask(__name__)
 
     ### CORS section
@@ -33,7 +34,6 @@ def index():
         return response
  
     
-    
 
 @app.route('/testscript2',methods=["POST"])
 def index2():
@@ -42,6 +42,15 @@ def index2():
         message=test2(password)
         response=jsonify({'message':message})
         return response
+@app.route('/uploadFile', methods=['POST'])
+def upload_file():
+    if request.files is not None:
+          uploaded_file = request.files['File']
+          if uploaded_file.filename != '':
+              uploaded_file.save(os.path.join("./files",uploaded_file.filename))
+              return jsonify({'message':'success'})
+    else:
+        return jsonify({"message":"nofile"})            
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)
@@ -53,6 +62,11 @@ if __name__ == "__main__":
  #step 3 =>  cf push testscript -b https://github.com/cloudfoundry/python-buildpack.git
 
 #front end 
- #cf push fronttest
+ #cf push fronttes
+ #npm install
+ #npm build 
+ #create mainfest.yml
+ #empty file in /build with name Staticfile
+ 
 #front end link => https://fronttest.cfapps.ap21.hana.ondemand.com/
 #back end link => testscript-boisterous-possum-kx.cfapps.ap21.hana.ondemand.com 
